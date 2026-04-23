@@ -9,7 +9,7 @@ exports.getAll = (req, res) => {
 exports.create = (req, res) => {
   const user = {
     id: users.length + 1,
-    ...req.body
+    ...req.body,
   };
   users.push(user);
   res.json(user);
@@ -17,12 +17,12 @@ exports.create = (req, res) => {
 
 // GET USER BY ID
 exports.getById = (req, res) => {
-  const user = users.find(u => u.id == req.params.id);
+  const user = users.find((u) => u.id == req.params.id);
   res.json(user);
 };
 
 // DELETE USER
 exports.remove = (req, res) => {
-  users = users.filter(u => u.id != req.params.id);
-  res.json({ message: "User deleted" });
+  users = users.filter((u) => u.id != req.params.id);
+  res.json({ message: 'User deleted' });
 };

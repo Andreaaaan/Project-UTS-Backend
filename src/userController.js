@@ -1,3 +1,3 @@
 exports.test = (req, res) => {
-  res.json({ message: "User jalan" });
+  res.json({ message: 'User jalan' });
 };

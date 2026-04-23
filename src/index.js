@@ -1,24 +1,26 @@
 const { env, port } = require('./core/config');
-const logger = require('./core/logger')('app');
+const logger = require('./core/logger')('Grab-API');
 const server = require('./core/server');
 
 const app = server.listen(port, (err) => {
   if (err) {
-    logger.fatal(err, 'Failed to start the server.');
+    logger.fatal(err, 'Gagal menjalankan server Grab API.');
     process.exit(1);
   } else {
-    logger.info(`Server runs at port ${port} in ${env} environment`);
+    logger.info(
+      `Server Grab API kelompok backend berjalan di port ${port} (Environment: ${env})`
+    );
   }
 });
 
 process.on('uncaughtException', (err) => {
-  logger.fatal(err, 'Uncaught exception.');
+  logger.fatal(
+    err,
+    'Terjadi error fatal (Uncaught exception). Server akan dimatikan.'
+  );
 
-  // Shutdown the server gracefully
   app.close(() => process.exit(1));
 
-  // If a graceful shutdown is not achieved after 1 second,
-  // shut down the process completely
   setTimeout(() => process.abort(), 1000).unref();
   process.exit(1);
 });
