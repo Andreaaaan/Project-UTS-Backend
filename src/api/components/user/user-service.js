@@ -1,17 +1,35 @@
-const express = require('express');
+const usersRepository = require('./users-repository');
 
-const usersController = require('./users-controller');
+async function getUsers() {
+  return usersRepository.getUsers();
+}
 
-const route = express.Router();
+async function getUser(id) {
+  return usersRepository.getUser(id);
+}
 
-module.exports = (app) => {
-  app.use('/users', route);
+async function emailExists(email) {
+  const user = await usersRepository.getUserByEmail(email);
+  return !!user;  
+}
 
-  
-route.get('/', usersController.getUsers);
-route.post('/', usersController.createUser);
-route.get('/:id', usersController.getUser);
-route.put('/:id', usersController.updateUser);
-route.put('/:id/change-password', usersController.changePassword);
-route.delete('/:id', usersController.deleteUser);
+async function createUser(email, password, fullName) {
+  return usersRepository.createUser(email, password, fullName);
+}
+
+async function updateUser(id, email, fullName) {
+  return usersRepository.updateUser(id, email, fullName);
+}
+
+async function deleteUser(id) {
+  return usersRepository.deleteUser(id);
+}
+
+module.exports = {
+  getUsers,
+  getUser,
+  emailExists,
+  createUser,
+  updateUser,
+  deleteUser,
 };
