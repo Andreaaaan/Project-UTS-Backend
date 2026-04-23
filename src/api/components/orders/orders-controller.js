@@ -1,58 +1,62 @@
 const ordersService = require('./orders-service');
-const history = require('../history/history-controller');
 
-function getOrders(req, res) {
-  const data = ordersService.getOrders();
+async function getOrders(req, res) {
+  const data = await ordersService.getAll();
   res.json(data);
 }
 
-function getOrder(req, res) {
-  const item = ordersService.getOrder(req.params.id);
+async function getOrder(req, res) {
+  const item = await ordersService.getById(req.params.id);
   if (!item) return res.status(404).json({ message: 'Not found' });
 
   res.json(item);
 }
 
-function createOrder(req, res) {
-  const newData = ordersService.createOrder({
-    ...req.body,
-    status: 'pending',
-  });
+async function createOrder(req, res) {
+  const { product_name, quantity, price, pickupLocation, destinationLocation } =
+    req.body;
 
-  history.addHistory({
-    action: 'ORDER_CREATED',
-    description: `Order dari ${newData.pickup_location} ke ${newData.destination_location}`,
+  if (!product_name || !quantity || !price) {
+    return res.status(400).json({
+      message: 'product_name, quantity, dan price wajib diisi',
+    });
+  }
+
+  if (!pickupLocation || !destinationLocation) {
+    return res.status(400).json({
+      message: 'pickupLocation dan destinationLocation wajib diisi',
+    });
+  }
+
+  const newData = await ordersService.create({
+    product_name,
+    quantity,
+    price,
+    pickupLocation,
+    destinationLocation,
   });
 
   res.status(201).json(newData);
 }
 
-function updateOrder(req, res) {
+async function updateOrder(req, res) {
   const validStatus = ['pending', 'completed', 'cancelled'];
 
   if (!validStatus.includes(req.body.status)) {
     return res.status(400).json({ message: 'Invalid status' });
   }
 
-  const item = ordersService.updateOrder(req.params.id, req.body.status);
-  if (!item) return res.status(404).json({ message: 'Not found' });
+  const item = await ordersService.updateStatus(req.params.id, req.body.status);
 
-  history.addHistory({
-    action: 'ORDER_UPDATED',
-    description: `Order ${item.id} jadi ${item.status}`,
-  });
+  if (!item) return res.status(404).json({ message: 'Not found' });
 
   res.json(item);
 }
 
-function deleteOrder(req, res) {
-  const success = ordersService.deleteOrder(req.params.id);
-  if (!success) return res.status(404).json({ message: 'Not found' });
+async function deleteOrder(req, res) {
+  const success = await ordersService.remove(req.params.id);
 
-  history.addHistory({
-    action: 'ORDER_DELETED',
-    description: `Order ${req.params.id} dihapus`,
-  });
+  if (!success) return res.status(404).json({ message: 'Not found' });
 
   res.json({ message: 'Deleted' });
 }

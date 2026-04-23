@@ -1,4 +1,4 @@
-const Payment = require('../../../models/payments-schema');
+const Payment = require('../../../models');
 
 async function createPayment(data) {
   return await Payment.create(data);

@@ -1,9 +1,9 @@
-module.exports = (mongoose) => {
-  const schema = new mongoose.Schema({
-    action: { type: String, required: true },
-    description: { type: String },
-    created_at: { type: Date, default: Date.now },
-  });
+const mongoose = require('mongoose');
 
-  return mongoose.model('History', schema);
-};
+const schema = new mongoose.Schema({
+  action: { type: String, required: true },
+  description: { type: String },
+  created_at: { type: Date, default: Date.now },
+});
+
+module.exports = mongoose.model('History', schema);

@@ -1,4 +1,4 @@
-const Notification = require('../../../models/Notifications-schema');
+const Notification = require('../../../models');
 
 exports.create = (data) => Notification.create(data);
 

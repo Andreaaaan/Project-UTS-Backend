@@ -1,44 +1,32 @@
-let history = [];
-let id = 1;
+const service = require('./history-service');
 
-function getAll(req, res) {
-  res.json(history);
+async function getAll(req, res) {
+  const data = await service.getAll();
+  res.json(data);
 }
 
-function getOne(req, res) {
-  const item = history.find((h) => h.id == req.params.id);
+async function getOne(req, res) {
+  const item = await service.getOne(req.params.id);
   if (!item) return res.status(404).json({ message: 'Not found' });
 
   res.json(item);
 }
 
-function create(req, res) {
-  const newData = {
-    id: id++,
-    ...req.body,
-  };
-  history.push(newData);
-  res.status(201).json(newData);
+async function create(req, res) {
+  const data = await service.create(req.body);
+  res.status(201).json(data);
 }
 
-function remove(req, res) {
-  const index = history.findIndex((h) => h.id == req.params.id);
-  if (index === -1) return res.status(404).json({ message: 'Not found' });
+async function remove(req, res) {
+  const deleted = await service.remove(req.params.id);
+  if (!deleted) return res.status(404).json({ message: 'Not found' });
 
-  history.splice(index, 1);
   res.json({ message: 'Deleted' });
 }
 
-function clear(req, res) {
-  history = [];
+async function clear(req, res) {
+  await service.clear();
   res.json({ message: 'All history cleared' });
-}
-
-function addHistory(data) {
-  history.push({
-    id: id++,
-    ...data,
-  });
 }
 
 module.exports = {
@@ -47,5 +35,4 @@ module.exports = {
   create,
   remove,
   clear,
-  addHistory,
 };

@@ -1,38 +1,35 @@
-const orders = [];
-let idCounter = 1;
+const { Order } = require('../../../models');
 
-function getAll() {
-  return orders;
+async function getAll() {
+  return await Order.find();
 }
 
-function getById(id) {
-  return orders.find((o) => o.id === parseInt(id));
+async function getById(id) {
+  return await Order.findById(id);
 }
 
-function create(data) {
-  const order = {
-    id: idCounter++,
-    status: 'pending',
-    ...data,
-  };
-  orders.push(order);
-  return order;
+async function create(data) {
+  return await Order.create(data);
 }
 
-function updateStatus(id, status) {
-  const order = getById(id);
+async function updateStatus(id, status) {
+  const order = await Order.findById(id);
   if (!order) return null;
 
   order.status = status;
+  await order.save();
   return order;
 }
 
-function remove(id) {
-  const index = orders.findIndex((o) => o.id === parseInt(id));
-  if (index === -1) return false;
-
-  orders.splice(index, 1);
-  return true;
+async function remove(id) {
+  const result = await Order.findByIdAndDelete(id);
+  return !!result;
 }
 
-module.exports = { getAll, getById, create, updateStatus, remove };
+module.exports = {
+  getAll,
+  getById,
+  create,
+  updateStatus,
+  remove,
+};

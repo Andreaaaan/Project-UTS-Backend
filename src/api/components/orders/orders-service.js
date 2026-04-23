@@ -1,29 +1,32 @@
 const repo = require('./orders-repository');
 
-function getOrders() {
-  return repo.getAll();
+async function getAll() {
+  return await repo.getAll();
 }
 
-function getOrder(id) {
-  return repo.getById(id);
+async function getById(id) {
+  return await repo.getById(id);
 }
 
-function createOrder(data) {
-  return repo.create(data);
+async function create(data) {
+  return await repo.create({
+    ...data,
+    status: 'pending',
+  });
 }
 
-function updateOrder(id, status) {
-  return repo.updateStatus(id, status);
+async function updateStatus(id, status) {
+  return await repo.updateStatus(id, status);
 }
 
-function deleteOrder(id) {
-  return repo.remove(id);
+async function remove(id) {
+  return await repo.remove(id);
 }
 
 module.exports = {
-  getOrders,
-  getOrder,
-  createOrder,
-  updateOrder,
-  deleteOrder,
+  getAll,
+  getById,
+  create,
+  updateStatus,
+  remove,
 };

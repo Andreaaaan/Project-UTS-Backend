@@ -1,29 +1,29 @@
 const repo = require('./history-repository');
 
-function getHistory() {
-  return repo.getAll();
+async function getAll() {
+  return await repo.findAll();
 }
 
-function getHistoryById(id) {
-  return repo.getById(id);
+async function getOne(id) {
+  return await repo.findById(id);
 }
 
-function createHistory(data) {
-  return repo.create(data);
+async function create(data) {
+  return await repo.create(data);
 }
 
-function deleteHistory(id) {
-  return repo.remove(id);
+async function remove(id) {
+  return await repo.remove(id);
 }
 
-function clearHistory() {
-  repo.clearAll();
+async function clear() {
+  return await repo.clear();
 }
 
 module.exports = {
-  getHistory,
-  getHistoryById,
-  createHistory,
-  deleteHistory,
-  clearHistory,
+  getAll,
+  getOne,
+  create,
+  remove,
+  clear,
 };

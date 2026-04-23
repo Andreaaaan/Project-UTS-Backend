@@ -1,33 +1,29 @@
-let histories = [];
-let idCounter = 1;
+const History = require('../../../models/history-schema');
 
-function getAll() {
-  return histories;
+async function findAll() {
+  return await History.find();
 }
 
-function getById(id) {
-  return histories.find((h) => h.id === parseInt(id));
+async function findById(id) {
+  return await History.findById(id);
 }
 
-function create(data) {
-  const history = {
-    id: idCounter++,
-    ...data,
-  };
-  histories.push(history);
-  return history;
+async function create(data) {
+  return await History.create(data);
 }
 
-function remove(id) {
-  const index = histories.findIndex((h) => h.id === parseInt(id));
-  if (index === -1) return false;
-
-  histories.splice(index, 1);
-  return true;
+async function remove(id) {
+  return await History.findByIdAndDelete(id);
 }
 
-function clearAll() {
-  histories = [];
+async function clear() {
+  return await History.deleteMany();
 }
 
-module.exports = { getAll, getById, create, remove, clearAll };
+module.exports = {
+  findAll,
+  findById,
+  create,
+  remove,
+  clear,
+};
