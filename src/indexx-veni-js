@@ -1,0 +1,31 @@
+const express = require('express');
+const mongoose = require('mongoose');
+const routes = require('./api/routes'); 
+
+const app = express();
+
+ 
+app.use(express.json());
+
+ 
+const urlAtlas = 'mongodb+srv://Veni-driver-user-location:12345@cluster0.gqvpdsp.mongodb.net/tugas_veni?retryWrites=true&w=majority&appName=Cluster0';
+
+mongoose.connect(urlAtlas)
+  .then(() => {
+    console.log('=========================================');
+    console.log('✅ DATABASE VENI SUDAH CONNECT KE CLOUD!');
+    console.log('=========================================');
+  })
+  .catch((err) => {
+    console.error('❌ Gagal Konek Database:', err.message);
+    console.log('Tips: Pastikan "Network Access" di Atlas sudah "Allow Access From Anywhere"');
+  });
+
+ 
+app.use('/api', routes);
+
+const PORT = 5000;
+app.listen(PORT, () => {
+  console.log(`🚀 Server fitur Veni jalan di http://localhost:${PORT}`);
+  console.log(`Silakan tes di Thunder Client menggunakan port ${PORT}`);
+});
