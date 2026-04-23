@@ -1,8 +1,10 @@
 module.exports = (mongoose) => {
   const schema = new mongoose.Schema({
-    product_name: { type: String, required: true },
-    quantity: { type: Number, required: true },
-    price: { type: Number, required: true },
+    product_name: String,
+    pickup_location: String,
+    destination_location: String,
+    quantity: Number,
+    price: Number,
     status: {
       type: String,
       enum: ['pending', 'completed', 'cancelled'],
@@ -10,5 +12,5 @@ module.exports = (mongoose) => {
     },
   });
 
-  return mongoose.model('Order', schema);
+  return mongoose.models.Order || mongoose.model('Order', schema);
 };

@@ -1,47 +1,41 @@
-let data = [];
-let id = 1;
-
+const ordersService = require('./orders-service');
 const history = require('../history/history-controller');
 
 function getOrders(req, res) {
+  const data = ordersService.getOrders();
   res.json(data);
 }
 
 function getOrder(req, res) {
-  const item = data.find((d) => d.id == req.params.id);
+  const item = ordersService.getOrder(req.params.id);
   if (!item) return res.status(404).json({ message: 'Not found' });
 
   res.json(item);
 }
 
 function createOrder(req, res) {
-  const newData = {
-    id: id++,
-    status: 'pending',
+  const newData = ordersService.createOrder({
     ...req.body,
-  };
-
-  data.push(newData);
+    status: 'pending',
+  });
 
   history.addHistory({
     action: 'ORDER_CREATED',
-    description: `Order ${newData.product_name} dibuat`,
+    description: `Order dari ${newData.pickup_location} ke ${newData.destination_location}`,
   });
 
   res.status(201).json(newData);
 }
 
 function updateOrder(req, res) {
-  const item = data.find((d) => d.id == req.params.id);
-  if (!item) return res.status(404).json({ message: 'Not found' });
-
   const validStatus = ['pending', 'completed', 'cancelled'];
 
   if (!validStatus.includes(req.body.status)) {
     return res.status(400).json({ message: 'Invalid status' });
   }
 
-  item.status = req.body.status;
+  const item = ordersService.updateOrder(req.params.id, req.body.status);
+  if (!item) return res.status(404).json({ message: 'Not found' });
 
   history.addHistory({
     action: 'ORDER_UPDATED',
@@ -52,10 +46,8 @@ function updateOrder(req, res) {
 }
 
 function deleteOrder(req, res) {
-  const item = data.find((d) => d.id == req.params.id);
-  if (!item) return res.status(404).json({ message: 'Not found' });
-
-  data = data.filter((d) => d.id != req.params.id);
+  const success = ordersService.deleteOrder(req.params.id);
+  if (!success) return res.status(404).json({ message: 'Not found' });
 
   history.addHistory({
     action: 'ORDER_DELETED',
