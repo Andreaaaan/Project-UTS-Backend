@@ -5,6 +5,7 @@ const orders = require('./components/orders/orders-route');
 const history = require('./components/history/history-route');
 const notifications = require('./components/Notifications/Notif-route');
 const paymentsRoute = require('./components/payments/payments-route');
+const ratingsRoute = require('./components/ratings/ratings-route');
 
 module.exports = () => {
   const app = express.Router();
@@ -13,6 +14,7 @@ module.exports = () => {
   orders(app);
   history(app);
   paymentsRoute(app);
+  ratingsRoute(app);
   app.use(notifications);
 
   return app;
